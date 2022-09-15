@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{{title}}</title>
+  {{{style}}}
+  <script src="remark.min.js"></script>
+  <script>
+    var hljs = remark.highlighter.engine;
+  </script>
+  <script src="remark.language.js"></script>
+  <script>
+      function create() {
+        return remark.create({
+          {{{source}}},
+          ratio: '16:9',
+          highlightStyle: 'solarized-dark',
+          highlightLanguage: 'python',
+          highlightLines: false,
+          countIncrementalSlides: false
+        });
+      }
+  </script>
+</head>
+<body onload="slideshow = create()">
+</body>
+</html>
