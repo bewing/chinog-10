@@ -33,10 +33,16 @@ Simple, Spine/Leaf datacenter with service leaves
 
 .image-60[![catalog-flood](assets/catalog-water.png)]
 
+???
+May 2020 flood
+
 ---
 <div class="my-header"><h1>Complexity</h1></div>
 <br />
 .image-60[![transformer-fire](assets/transformer-fire.png)]
+
+???
+May 2020 Transformer fire near Coresite datacenter
 
 ---
 class: middle
@@ -57,12 +63,21 @@ class: middle
 <br />
 .image-60[![spreadsheet](assets/spreadsheet.jpeg)]
 
+???
+Management/spreadsheets don't do things twice
+They do them N-times
+
 ---
 class: middle
 
 <div class="my-header"><h1>Complexity</h1></div>
 .image-60[![horizontal](assets/horizontal.png)]
 
+???
+Datacenters spread across regions
+different deploy times
+different hardware
+even different vendors!
 ---
 
 <div class="my-header"><h1>Complexity</h1></div>
