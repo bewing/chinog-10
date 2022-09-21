@@ -435,7 +435,7 @@ router bgp 65000.TODO
 class: middle
 <div class="my-header"><h1>Interfaces</h1></div>
 
-* RFC5549 - IPv4 NLRI in IPv6 Peering
+* [RFC5549](https://datatracker.ietf.org/doc/html/rfc5549) - IPv4 NLRI in IPv6 Peering
 * * Allows IPv4 reachability over just IPv6 peerings
 * * No longer need IPv4 BGP peerings
 * * No longer need IPv4 point to point interfaces!
@@ -448,8 +448,8 @@ interface Ethernet49/1
 !
 router bgp 6500.16394
   neighbor SPINES peer-group
-  neigbor TODO peer-group SPINES
-  neighbor TODO remote-as TODO
+  neighbor 2001:db8::ffff:0a00:1/127 peer-group SPINES
+  neighbor 2001:db8::ffff:0a00:1/127 remote-as TODO
   address-family ipv4 unicast
     bgp next-hop address-family ipv6
     neighbor SPINES activate
@@ -460,6 +460,47 @@ router bgp 6500.16394
   !
 !
 ```
+
+---
+class: middle
+<div class="my-header"><h1>But wait, there's more!</h1></div>
+
+* [draft-white-linklocal-capability](https://datatracker.ietf.org/doc/draft-white-linklocal-capability/)
+* Widely supported across vendors
+* Standardizes existing practice of BGP peering via link-local IPv6 addresses
+* Now we don't need any globally unique addressing!
+
+```terminal
+interface Ethernet49/1
+  ipv6 address fe80::0/64
+  pim ipv4 sparse-mode
+  pim ipv6 sparse-mode
+!
+router bgp 6500.16394
+  neighbor SPINES peer-group
+  neighbor fe80::1%Ethernet49/1 peer-group SPINES
+  neighbor fe80::1%Ethernet49/1 remote-as TODO
+  address-family ipv4 unicast
+    bgp next-hop address-family ipv6
+    neighbor SPINES activate
+    neighbor SPINES next-hop address-family ipv6 originate
+  !
+  address-family ipv6 unicast
+    neighbor SPINES activate
+  !
+!
+```
+
+---
+class: middle
+
+<div class="my-header"><h1>Here be dragons</h1>
+* BGP Peer autodetection
+* Multiple IETF IDR WG proposals (see [draft-ietf-idr-bgp-autoconf-considerations](https://datatracker.ietf.org/doc/draft-ietf-idr-bgp-autoconf-considerations/02/))
+* What layer?
+* Security?
+* Session, or stateless?
+* No real consensus yet
 
 ---
 class: middle
