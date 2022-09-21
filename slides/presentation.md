@@ -1,5 +1,3 @@
-title: The 16-bit Datacenter
-layout: true
 
 ---
 class: center, middle
@@ -7,7 +5,7 @@ class: center, middle
 <div class="my-header"><img src="assets/imc-logo.png" style="float: left; width:250px"></div>
 
 .image-40[![rimworld](assets/rimworld-dc.png)]
-# {{ title }}
+# The 16-bit Datacenter
 Brandon Ewing<br />
 CHI-NOG 10, Oct 2022<br />
 [www.github.com/bewing/chinog-10](https://www.github.com/bewing/chinog-10/)
@@ -20,6 +18,33 @@ CHI-NOG 10, Oct 2022<br />
 * more touches means more opportunity for error
 
 TODO:  Better image
+
+---
+<div class="my-header"><h1>Talk Contents</h1></div>
+<br />
+.row.table.middle[
+.col-6[
+<div style="
+        border-radius: 100%;
+        width: 400px;
+        aspect-ratio: 1;
+        background: conic-gradient(red 0deg 144deg, green 144deg 288deg, orange 240deg 360deg
+            );
+    "></div>
+]
+.col-6[
+.big.red[Knowledge Transfer]<br />
+.big.green[Stuff to think about]<br />
+]]
+
+--
+
+.row.table.middle[
+.col-6[&nbsp;]
+.col-6[
+.big.orange[Please tell me he's not doing that in prod]<br />
+]
+]
 
 ---
 class: middle
@@ -108,8 +133,8 @@ class: middle
 
 * Use templates
 * Same templates for provisioning and configuration
-* * If you aren't pushing configs, at least run audits
-* * Clean up cruft!
+* If you aren't pushing configs, at least run audits
+* Clean up cruft!
 
 ???
 Templating language doesn't matter<br />
@@ -494,13 +519,43 @@ router bgp 6500.16394
 ---
 class: middle
 
-<div class="my-header"><h1>Here be dragons</h1>
+<div class="my-header"><h1>Here be dragons</h1></div>
 * BGP Peer autodetection
 * Multiple IETF IDR WG proposals (see [draft-ietf-idr-bgp-autoconf-considerations](https://datatracker.ietf.org/doc/draft-ietf-idr-bgp-autoconf-considerations/02/))
-* What layer?
-* Security?
-* Session, or stateless?
+* Some Layer2 (LLDP), some Layer3
+* Some are secured, some aren't
+* Some are stateful, some are stateless
 * No real consensus yet
+* Trying to support all DC use cases
+
+---
+class: middle
+<div class="my-header"><h1>Until that happens...</h1></div>
+
+* More than one vendor supports IPv6 link-local peer autodetection
+* Uses IPv6 RAs to identify routers on an interface
+* No current RFC or I-D for this behavior
+* There may be interoperability issues
+
+```terminal
+interface Ethernet49/1
+  ipv6 enable
+  pim ipv4 sparse-mode
+  pim ipv6 sparse-mode
+!
+router bgp 65000.16394
+  neighbor SPINES peer-group
+  neighbor interface Ethernet49/1 peer-group SPINES peer-filter SPINES
+  address-family ipv4 unicast
+    bgp next-hop address-family ipv6
+    neighbor SPINES activate
+    neighbor SPINES next-hop address-family ipv6 originate
+  !
+  address-family ipv6 unicast
+    neighbor SPINES activate
+  !
+!
+```
 
 ---
 class: middle
