@@ -33,8 +33,8 @@ TODO:  Better image
     "></div>
 ]
 .col-6[
-.big.red[Knowledge Transfer]<br />
-.big.green[Stuff to think about]<br />
+.big.red[40% Knowledge Transfer]<br />
+.big.green[40% Stuff to think about]<br />
 ]]
 
 --
@@ -42,7 +42,7 @@ TODO:  Better image
 .row.table.middle[
 .col-6[&nbsp;]
 .col-6[
-.big.orange[Please tell me he's not doing that in prod]<br />
+.big.orange[20% Please tell me he's not doing that in prod]<br />
 ]
 ]
 
@@ -81,6 +81,7 @@ class: middle
 ]]
 
 ---
+class: inverse
 
 <div class="my-header"><h1>Complexity</h1></div>
 <br />
@@ -178,8 +179,22 @@ hosts:
     search: warningg.com
     servers:
     - 8.8.8.8
-- hostname: dc2-leaf1
 ```
+
+---
+class:middle, center
+.big[
+```terminal
+$ stat --format "%s" host.yaml
+608
+```
+]
+--
+class: inverse
+
+.big[
+608 bytes > 2 bytes
+]
 
 ---
 # DRY
@@ -580,5 +595,5 @@ hosts:
 # TODO:  Hosts
 
 
---
+---
 # TODO: Wrap
