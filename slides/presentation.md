@@ -33,7 +33,7 @@ TODO:  Better image
     "></div>
 ]
 .col-6[
-.big.red[40% Knowledge Transfer]<br />
+.big.red[40% Knowledge Transfer]<p>
 .big.green[40% Stuff to think about]<br />
 ]]
 
@@ -142,14 +142,15 @@ Templating language doesn't matter<br />
 I'm using gomplate from containerlab here
 
 ---
-<div class="my-header"><h1>Baseline</h1></div>
+class: inverse
+<div class="my-header"><h1>Context</h1></div>
 
 ```yaml
 hosts:
-- hostname: dc1-spine1
+- hostname: dc1-leaf1
+  router-id: 172.18.4.10
   region: dc1
-  role: spine
-  router-id: 172.18.0.1
+  role: leaf
   aaa:
   - 192.168.3.2
   - 192.168.10.1
@@ -157,7 +158,7 @@ hosts:
   addresses:
     Loopback0:
       ipv4:
-      - 172.18.0.1/32
+      - 172.18.4.10/32
       ipv6:
       - "2001:db8::1/128"
     Ethernet1/1:
@@ -166,7 +167,7 @@ hosts:
       ipv6:
       - "2001:2b8:1::1/64"
   bgp:
-    asn: "65500.16394"
+    asn: "65534"
     ipv4:
       peer-groups:
       - name: SPINE-LEAF
@@ -193,139 +194,145 @@ $ stat --format "%s" host.yaml
 class: inverse
 
 .big[
-608 bytes > 2 bytes
+608 bytes > 16 bits
 ]
 
 ---
-# DRY
+# Don't Repeat Yourself
 * What if we could omit/derive some of these fields?
-* What is a router-id, anyway?
+* Router ID as the base
 
 --
 
 .row.table.middle[
 .col-3[
-172
+.center[172]
 ]
 .col-3[
-18
+.center[18]
 ]
 .col-3[
-64
+.center[4]
 ]
 .col-3[
-10
+.center[10]
 ]]
 .row.table.middle[
 .col-3[
-10101100
+.center[10101100]
 ]
 .col-3[
-00010010
+.center[00010010]
 ]
 .col-3[
-01000000
+.center[00000100]
 ]
 .col-3[
-00001010
+.center[00001010]
 ]]
 
 ---
-# DRY
+# Don't Repeat Yourself
 * What if we could omit/derive some of these fields?
-* What is a router-id, anyway?
+* Router ID as the base
 
 .row.table.middle[
-.col-3[
-172
-]
-.col-3[
-18
-]
-.col-3[
-64
+.col-8[
+4
 ]
 .col-3[
 10
 ]]
 .row.table.middle[
-.col-3[
-10101100
+.col-2[
+.orange[00]
 ]
-.col-3[
-00010010
+.col-2[
+.green[00]
 ]
-.col-3[
-.orange[01].green[00].red[00].purple[00]
+.col-2[
+.red[01]
 ]
-.col-3[
+.col-2[
+.purple[00]
+]
+.col-6[
 .purple[00001010]
 ]]
 
 .row.table.middle[
-.col-6[
-
-]
-.col-1[
+.col-2[
 .orange[Region]
 ]
-.col-1[
+.col-2[
 .green[Site]
 ]
-.col-1[
+.col-2[
 .red[Layer]
 ]
-.col-1[
-.purple[Device]
+.col-3[
+.purple.center[Device]
 ]
 ]
-
 
 ---
-# DRY
+
+# Don't Repeat Yourself
 * What if we could omit/derive some of these fields?
-* What is a router-id, anyway?
-* What is a BGP ASN?
+* Router ID as the base
+* Generate the IPv6 loopback, too!
+
+.big[
+2001:db8::/64 + 172.18.4.10/32<p />
+.col-6[2001:db8::172.18.4.10]
+.col-6[2001:db8::ac12:40ac]
+]
+---
+# Don't Repeat Yourself
+* What if we could omit/derive some of these fields?
+* Router ID as the base
+* Generate the IPv6 loopback, too!
+* BGP ASN?  Sure!
 <br />
 
 .center[.big[<16 bits>.<16 bits>]]
 
 --
 
-.center[65000 . (64 * 256) + 10 ]
+.center[65000 . (4 * 256) + 10 ]
 <br />
-.center[.big[65000.16394]]
+.center[.big[65000.1034]]
 
 * Why 16 bits?
 --
 
-* * IPv4
-* * BGP ASN space
+ * IPv4
+ * BGP ASN space
 
 ---
 class: middle
 # 32-bit joke image
 
 ---
+class: inverse
+<div class="my-header"><h1>Context</h1></div>
 
 ```yaml
 hosts:
-- hostname: dc1-spine1
-  router-id: 172.18.0.1
+- hostname: dc1-leaf1
+  router-id: 172.18.4.10
   aaa:
   - 192.168.3.2
   - 192.168.10.1
   - 192.168.14.10
   addresses:
-    Loopback0:
-      ipv6:
-      - "2001:db8::1/128"
     Ethernet1/1:
       ipv4:
       - 10.0.0.0/31
       ipv6:
       - "2001:2b8:1::1/64"
   bgp:
+    asn: "65500.1034"
     ipv4:
       peer-groups:
       - name: SPINE-LEAF
@@ -339,32 +346,43 @@ hosts:
     servers:
     - 8.8.8.8
 ```
+
 ---
 
 class: middle
 <div class="my-header"><h1>Boilerplate</h1></div>
 
-.row.table.middle[
+.table[
+.row[
+.col-6[
+.big[DC1-LEAF4]
+]
+.col-6[
+.big[DC4-LEAF9]
+]
+]
+.row[
 .col-6[
 ```terminal
-<span style="color:red;">ip nameserver 192.168.0.0</span>
-<span style="color:red;">ip nameserver 192.168.100.100</span>
+<span style="color:red;">-ip nameserver 192.168.0.0</span>
+<span style="color:red;">-ip nameserver 192.168.100.100</span>
 !
-<span style="color:red;">tacacs-server 192.168.3.2</span>
-<span style="color:red;">tacacs-server 192.168.10.1</span>
-<span style="color:red;">tacacs-server 192.168.14.10</span>
+<span style="color:red;">-tacacs-server 192.168.3.2</span>
+tacacs-server 192.168.10.1
+<span style="color:red;">-tacacs-server 192.168.14.10</span>
 
 ```
 ]
 .col-6[
 ```terminal
-<span style="color:green;">ip nameserver 192.168.100.100</span>
-<span style="color:green;">ip nameserver 192.168.0.0</span>
+<span style="color:green;">+ip nameserver 10.240.0.0</span>
+<span style="color:green;">+ip nameserver 10.244.100.100</span>
 !
-<span style="color:green;">tacacs-server 192.168.14.10</span>
-<span style="color:green;">tacacs-server 192.168.10.1</span>
-<span style="color:green;">tacacs-server 192.168.3.2</span>
+<span style="color:green;">+tacacs-server 192.168.14.10</span>
+tacacs-server 192.168.10.1
+<span style="color:green;">+tacacs-server 192.168.3.2</span>
 ```
+]
 ]
 ]
 * Anycast where possible
@@ -403,14 +421,23 @@ hosts:
 class: middle
 <div class="my-header"><h1>Interfaces</h1></div>
 
-.row.table.middle[
+.table[
+.row[
+.col-6[
+DC1-LEAF4
+]
+.col-6[
+DC4-LEAF9
+]
+]
+.row[
 .col-6[
 ```terminal
 interface Ethernet49/1
-<span style="color:red;">  description DC1-SPINE1:Et5/1</span>
+<span style="color:red;">-  description DC1-SPINE1:Et5/1</span>
   no switchport
-<span style="color:red;">  ip address 10.0.0.0/31</span>
-<span style="color:red;">  ipv6 address 2001:db8::ffff:0a00:0/127</span>
+<span style="color:red;">-  ip address 10.0.0.0/31</span>
+<span style="color:red;">-  ipv6 address 2001:db8::ffff:0a00:0/127</span>
   pim ipv4 sparse-mode
   pim ipv6 sparse-mode
 ```
@@ -418,13 +445,14 @@ interface Ethernet49/1
 .col-6[
 ```terminal
 interface Ethernet 49/1
-<span style="color:green;">  description DC4-SPINE3:Et5/1</span>
+<span style="color:green;">+  description DC4-SPINE3:Et5/1</span>
   no switchport
-<span style="color:green;">  ip address 10.5.49.22/31</span>
-<span style="color:green;">  ipv6 address 2001:db8::ffff:a05:3116/127</span>
+<span style="color:green;">+  ip address 10.5.49.22/31</span>
+<span style="color:green;">+  ipv6 address 2001:db8::ffff:a05:3116/127</span>
   pim ipv4 sparse-mode
   pim ipv6 sparse-mode
 ```
+]
 ]
 ]
 
@@ -434,10 +462,10 @@ interface Ethernet 49/1
 router bgp 65000.TODO
   neighbor SPINES-v4 peer-group
   neighbor SPINES-v6 peer-group
-<span style="color:red;">  neighbor 10.0.0.1 peer-group SPINES-v4</span>
-<span style="color:red;">  neighbor 10.0.0.1 remote-as 65000.TODO</span>
-<span style="color:red;">  neighbor 2001:db8:ffff:0a00:1 peer-group SPINES-v6</span>
-<span style="color:red;">  neighbor 2001:db8:ffff:0a00:1 remote-as 65000.TODO</span>
+<span style="color:red;">-  neighbor 10.0.0.1 peer-group SPINES-v4</span>
+<span style="color:red;">-  neighbor 10.0.0.1 remote-as 65000.TODO</span>
+<span style="color:red;">-  neighbor 2001:db8:ffff:0a00:1 peer-group SPINES-v6</span>
+<span style="color:red;">-  neighbor 2001:db8:ffff:0a00:1 remote-as 65000.TODO</span>
   address-family ipv4 unicast
     peer-group SPINES-v4 activate
     no peer-group SPINES-v6 activate
@@ -454,10 +482,10 @@ router bgp 65000.TODO
 router bgp 65000.TODO
   neighbor SPINES-v4 peer-group
   neighbor SPINES-v6 peer-group
-<span style="color:green;">  neighbor TODO peer-group SPINES-v4</span>
-<span style="color:green;">  neighbor TODO remote-as TODO</span>
-<span style="color:green;">  neighbor TODO peer-group SPINES-v6</span>
-<span style="color:green;">  neighbor TODO remote-as TODO</span>
+<span style="color:green;">+  neighbor TODO peer-group SPINES-v4</span>
+<span style="color:green;">+  neighbor TODO remote-as TODO</span>
+<span style="color:green;">+  neighbor TODO peer-group SPINES-v6</span>
+<span style="color:green;">+  neighbor TODO remote-as TODO</span>
   address-family ipv4 unicast
     peer-group SPINES-v4 activate
     no peer-group SPINES-v6 activate
