@@ -6,5 +6,11 @@ dev-server:
 slides/dist/presentation.html: $(TEMPLATEFILES) slides/presentation.md
 	@cd slides && bs export
 
+slides/pdf/presentation.pdf: slides/dist/presentation.html
+	@cd slides && decktape -p 1000 dist/presentation.html pdf/presentation.pdf
+
 .PHONY: slides
 slides: slides/dist/presentation.html
+
+.PHONY: pdf
+pdf: slides/pdf/presentation.pdf
