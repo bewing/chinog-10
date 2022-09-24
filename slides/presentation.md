@@ -303,11 +303,18 @@ class: inverse
 <br />
 .center[.big[65000.1034]]
 
-* Why 16 bits?
 --
 
+.row.table[
+.col-6[
+* Why 16 bits?
  * IPv4
  * BGP ASN space
+]
+.col-6[
+.orange[This is one of those 20% parts]
+]
+]
 
 ---
 class: middle
@@ -562,7 +569,7 @@ router bgp 6500.16394
 ---
 class: middle
 
-<div class="my-header"><h1>Here be dragons</h1></div>
+<div class="my-header"><h1>BGP Peerings</h1></div>
 * BGP Peer autodetection
 * Multiple IETF IDR WG proposals (see [draft-ietf-idr-bgp-autoconf-considerations](https://datatracker.ietf.org/doc/draft-ietf-idr-bgp-autoconf-considerations/02/))
 * Some Layer2 (LLDP), some Layer3
@@ -573,7 +580,7 @@ class: middle
 
 ---
 class: middle
-<div class="my-header"><h1>Until that happens...</h1></div>
+<div class="my-header"><h1>BGP Peerings</h1></div>
 
 * More than one vendor supports IPv6 link-local peer autodetection
 * Uses IPv6 RAs to identify routers on an interface
@@ -602,25 +609,44 @@ router bgp 65000.16394
 
 ---
 class: middle
+<div class="my-header"><h1>BGP Peerings</h1></div>
+* Neighborships can specify AS ranges
+* Still have to statically map a policy to an interface
+ * While we can predict this in our lab, production isn't as nice
+* What would be great is if remote AS determined policy
+* Ask your vendor if this is something they can support
+* May require stronger security ([RFC 5925 TCP-AO](https://datatracker.ietf.org/doc/html/rfc5925))
+
+---
+class:middle
+<div class="my-header"><h1>Hosts</h1></div>
+
+# TODO:  Hosts
+
+---
+class: middle
 
 ```yaml
 hosts:
 - hostname: dc1-spine1
-  router-id: 172.18.0.1
-- hostname: dc1-spine2
-  router-id: 172.18.0.2
-- hostname: dc1-spine3
-  router-id: 172.18.0.3
-- hostname: dc1-leaf1
   router-id: 172.18.64.1
-- hostname: dc1-leaf2
+- hostname: dc1-spine2
   router-id: 172.18.64.2
+- hostname: dc1-spine3
+  router-id: 172.18.64.3
+- hostname: dc1-leaf1
+  router-id: 172.18.128.4
+- hostname: dc1-leaf2
+  router-id: 172.18.128.5
 - hostname: dc2-superspine1
-  router-id: 172.18.192.0
+  router-id: 172.18.192.6
+- hostname: server0101
+  router-id: 172.18.0.7
 ```
 
 ---
-# TODO:  Hosts
+# Time-constraint:  C-lab Demo?
+# Config review?
 
 
 ---
