@@ -1,5 +1,3 @@
-
----
 class: center, middle
 
 <div class="my-header"><img src="assets/imc-logo.png" style="float: left; width:250px"></div>
