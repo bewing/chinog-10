@@ -144,7 +144,7 @@ class: inverse
 <div class="my-header"><h1>Context</h1></div>
 
 ```yaml
-hosts:
+nodes:
 - hostname: dc1-leaf1
   router-id: 172.18.4.10
   region: dc1
@@ -244,7 +244,7 @@ You don't have to golf if you don't want to
 ---
 
 ```yaml
-hosts:
+nodes:
 - hostname: dc1-leaf1
   router-id: 172.18.4.10
   region: dc1
@@ -400,7 +400,7 @@ class: inverse
 <div class="my-header"><h1>Context</h1></div>
 
 ```yaml
-hosts:
+nodes:
 - router-id: 172.18.4.10
   addresses:
     Ethernet1/1:
@@ -616,7 +616,7 @@ class: middle
 class: middle
 
 ```yaml
-hosts:
+nodes:
 - router-id: 172.18.64.1
 - router-id: 172.18.64.2
 - router-id: 172.18.64.3
@@ -629,8 +629,38 @@ hosts:
 ---
 class:middle
 <div class="my-header"><h1>Hosts</h1></div>
+* If your virtualization and tenancy model supports it, go deeper!
+* Assign hosts router-ids
+ * Deployment
+ * Custom DHCP
+* Advertise reachability via host-based BGP
+ * GoBGP
+ * FRR
+* IPv6 LL RA Supported!
+ 
+---
+class:middle
+<div class="my-header"><h1>Hosts</h1></div>
 
-# TODO:  Hosts
+```terminal
+router bgp 65000.16394
+  neighbor SPINES peer-group
+  neighbor SERVERS peer-group
+  neighbor interface Ethernet1-48 peer-group SERVERS peer-filter SERVERS
+  neighbor interface Ethernet49/1-52/4 peer-group SPINES peer-filter SPINES
+  address-family ipv4 unicast
+    bgp next-hop address-family ipv6
+    neighbor SERVERS activate
+    neighbor SERVERS next-hop address-family ipv6 originate
+    neighbor SPINES activate
+    neighbor SPINES next-hop address-family ipv6 originate
+  !
+  address-family ipv6 unicast
+    neighbor SERVERS activate
+    neighbor SPINES activate
+  !
+!
+```
 
 ---
 # Time-constraint:  C-lab Demo?
