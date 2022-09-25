@@ -196,6 +196,83 @@ class: inverse
 ]
 
 ---
+class: middle
+<div class="my-header"><h1>Boilerplate</h1></div>
+
+.table[
+.row[
+.col-6[
+.big[DC1-LEAF4]
+]
+.col-6[
+.big[DC4-LEAF9]
+]
+]
+.row[
+.col-6[
+```terminal
+<span style="color:red;">-ip nameserver 192.168.0.0</span>
+<span style="color:red;">-ip nameserver 192.168.100.100</span>
+!
+<span style="color:red;">-tacacs-server 192.168.3.2</span>
+tacacs-server 192.168.10.1
+<span style="color:red;">-tacacs-server 192.168.14.10</span>
+
+```
+]
+.col-6[
+```terminal
+<span style="color:green;">+ip nameserver 10.240.0.0</span>
+<span style="color:green;">+ip nameserver 10.244.100.100</span>
+!
+<span style="color:green;">+tacacs-server 192.168.14.10</span>
+tacacs-server 192.168.10.1
+<span style="color:green;">+tacacs-server 192.168.3.2</span>
+```
+]
+]
+]
+* Anycast where possible
+* * Be careful about TACACS sessions and the like
+* Global services with fallbacks if not
+* * If RTT is important, dynamically order them
+
+???
+You don't have to golf if you don't want to
+
+
+---
+
+```yaml
+hosts:
+- hostname: dc1-leaf1
+  router-id: 172.18.4.10
+  region: dc1
+  role: leaf
+  addresses:
+    Loopback0:
+      ipv4:
+      - 172.18.4.10/32
+      ipv6:
+      - "2001:db8::1/128"
+    Ethernet1/1:
+      ipv4:
+      - 10.0.0.0/31
+      ipv6:
+      - "2001:2b8:1::1/64"
+  bgp:
+    asn: "65534"
+    ipv4:
+      peer-groups:
+      - name: SPINE-LEAF
+        outbound-policy: SPINE-TO-LEAF
+        inbound-policy: LEAF-TO-SPINE
+        neighbors:
+        - address: 10.0.0.1
+          asn: TODO
+```
+
+---
 # Don't Repeat Yourself
 * What if we could omit/derive some of these fields?
 * Router ID as the base
@@ -324,91 +401,8 @@ class: inverse
 
 ```yaml
 hosts:
-- hostname: dc1-leaf1
-  router-id: 172.18.4.10
-  aaa:
-  - 192.168.3.2
-  - 192.168.10.1
-  - 192.168.14.10
+- router-id: 172.18.4.10
   addresses:
-    Ethernet1/1:
-      ipv4:
-      - 10.0.0.0/31
-      ipv6:
-      - "2001:2b8:1::1/64"
-  bgp:
-    asn: "65500.1034"
-    ipv4:
-      peer-groups:
-      - name: SPINE-LEAF
-        outbound-policy: SPINE-TO-LEAF
-        inbound-policy: LEAF-TO-SPINE
-        neighbors:
-        - address: 10.0.0.1
-          asn: TODO
-  dns:
-    search: warningg.com
-    servers:
-    - 8.8.8.8
-```
-
----
-
-class: middle
-<div class="my-header"><h1>Boilerplate</h1></div>
-
-.table[
-.row[
-.col-6[
-.big[DC1-LEAF4]
-]
-.col-6[
-.big[DC4-LEAF9]
-]
-]
-.row[
-.col-6[
-```terminal
-<span style="color:red;">-ip nameserver 192.168.0.0</span>
-<span style="color:red;">-ip nameserver 192.168.100.100</span>
-!
-<span style="color:red;">-tacacs-server 192.168.3.2</span>
-tacacs-server 192.168.10.1
-<span style="color:red;">-tacacs-server 192.168.14.10</span>
-
-```
-]
-.col-6[
-```terminal
-<span style="color:green;">+ip nameserver 10.240.0.0</span>
-<span style="color:green;">+ip nameserver 10.244.100.100</span>
-!
-<span style="color:green;">+tacacs-server 192.168.14.10</span>
-tacacs-server 192.168.10.1
-<span style="color:green;">+tacacs-server 192.168.3.2</span>
-```
-]
-]
-]
-* Anycast where possible
-* * Be careful about TACACS sessions and the like
-* Global services with fallbacks if not
-* * If RTT is important, dynamically order them
-
-???
-You don't have to golf if you don't want to
-
-
----
-
-```yaml
-hosts:
-- hostname: dc1-spine1
-  router-id: 172.18.0.1
-  addresses:
-    Loopback0:
-      ipv6:
-      - "2001:db8::1/128"
     Ethernet1/1:
       ipv4:
       - 10.0.0.0/31
@@ -418,10 +412,13 @@ hosts:
     ipv4:
       peer-groups:
       - name: SPINE-LEAF
+        outbound-policy: SPINE-TO-LEAF
+        inbound-policy: LEAF-TO-SPINE
         neighbors:
         - address: 10.0.0.1
           asn: TODO
 ```
+
 ---
 class: middle
 <div class="my-header"><h1>Interfaces</h1></div>
@@ -616,31 +613,24 @@ class: middle
 * May require stronger security ([RFC 5925 TCP-AO](https://datatracker.ietf.org/doc/html/rfc5925))
 
 ---
-class:middle
-<div class="my-header"><h1>Hosts</h1></div>
-
-# TODO:  Hosts
-
----
 class: middle
 
 ```yaml
 hosts:
-- hostname: dc1-spine1
-  router-id: 172.18.64.1
-- hostname: dc1-spine2
-  router-id: 172.18.64.2
-- hostname: dc1-spine3
-  router-id: 172.18.64.3
-- hostname: dc1-leaf1
-  router-id: 172.18.128.4
-- hostname: dc1-leaf2
-  router-id: 172.18.128.5
-- hostname: dc2-superspine1
-  router-id: 172.18.192.6
-- hostname: server0101
-  router-id: 172.18.0.7
+- router-id: 172.18.64.1
+- router-id: 172.18.64.2
+- router-id: 172.18.64.3
+- router-id: 172.18.128.4
+- router-id: 172.18.128.5
+- router-id: 172.18.192.6
+- router-id: 172.18.0.7
 ```
+
+---
+class:middle
+<div class="my-header"><h1>Hosts</h1></div>
+
+# TODO:  Hosts
 
 ---
 # Time-constraint:  C-lab Demo?
