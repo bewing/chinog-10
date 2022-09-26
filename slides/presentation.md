@@ -216,7 +216,9 @@ class: middle
 
 
 ---
-
+class: inverse
+<div class="my-header"><h1>Context</h1></div>
+<br />
 ```yaml
 nodes:
 - hostname: dc1-leaf1
@@ -248,12 +250,24 @@ nodes:
 
 ---
 # Don't Repeat Yourself
-* What if we could omit/derive some of these fields?
-* Router ID as the base
+* Generate the IPv6 loopback
 
---
+<br />
+.biggish[
+2001:db8::/64 + 172.18.4.10/32<br /><br />
+.col-6[2001:db8::ac12:40ac]
+.col-6[2001:db8::172.18.4.10]
+.col-4[2001:db8::172:18:4:10]
+]
 
-.row.table.middle[
+---
+<div class="right-header" text-align="right">This is the the 20% part</div>
+
+# Don't Repeat Yourself
+* Generate the IPv6 loopback
+* Encode information into bit fields
+
+.row.table[
 .col-3[
 .center[172]
 ]
@@ -280,13 +294,11 @@ nodes:
 .center[00001010]
 ]]
 
----
-# Don't Repeat Yourself
-* What if we could omit/derive some of these fields?
-* Router ID as the base
+--
 
 .row.table.middle[
-.col-8[
+.col-3[]
+.col-5[
 4
 ]
 .col-3[
@@ -324,55 +336,116 @@ nodes:
 ]
 ]
 
----
+???
+What is a router-id?   32 bits<br />
+Much like BGP informational communities<br />
+use the lower 16 bits to store role info<br />
 
-# Don't Repeat Yourself
-* What if we could omit/derive some of these fields?
-* Router ID as the base
-* Generate the IPv6 loopback, too!
-
-.big[
-2001:db8::/64 + 172.18.4.10/32<p />
-.col-6[2001:db8::172.18.4.10]
-.col-6[2001:db8::ac12:40ac]
-]
 ---
+<div class="right-header" text-align="right">This is the the 20% part</div>
 # Don't Repeat Yourself
-* What if we could omit/derive some of these fields?
-* Router ID as the base
-* Generate the IPv6 loopback, too!
+* Generate the IPv6 loopback
+* Encode information into bit fields
 * BGP ASN?  Sure!
 <br />
-
-.center[.big[<16 bits>.<16 bits>]]
-
---
-
-.center[65000 . (4 * 256) + 10 ]
 <br />
-.center[.big[65000.1034]]
 
---
 
-.row.table[
-.col-6[
-* Why 16 bits?
- * IPv4
- * BGP ASN space
+.center[.big[65000.XXXXX]]
+.center[.big[<16 bits>.**<16 bits>**]]
+
+---
+<div class="right-header" text-align="right">This is the the 20% part</div>
+.col-2[
+.orange[Region]
+]
+.col-2[
+.green[Site]
+]
+.col-2[
+.red[Layer]
+]
+.col-2[&nbsp;]
+.col-4[
+.purple[ID]
+]
+
+.col-12[
+.center[
+172.18.4.10
+]
+]
+
+.col-2[
+.orange[00]
+]
+.col-2[
+.green[00]
+]
+.col-2[
+.red[01]
+]
+.col-2[
+.purple[00]
+]
+.col-4[
+.purple[00001010]
 ]
 .col-6[
-.orange[This is one of those 20% parts]
+65500.(4 * 256 + 10)
 ]
+.col-6[
+**65500.1034**
+]
+
+.col-12[
+.center[
+172.18.72.75
+]
+]
+
+.col-2[
+.orange[01]
+]
+.col-2[
+.green[00]
+]
+.col-2[
+.red[10]
+]
+.col-2[
+.purple[00]
+]
+.col-4[
+.purple[01001011]
+]
+.col-6[
+65500.(72 * 256 + 75)
+]
+.col-6[
+**65500.18507**
 ]
 
 ---
 class: middle
-# 32-bit joke image
+<div class="right-header" text-align="right">This is the the 20% part</div>
+
+.row.table.middle[
+.col-6[
+* Why 16 bits?
+ * Have to title the talk somehow
+ * IPv4 Reachability
+ * BGP ASN space ~18 bits
+]
+.col-6[
+.orange[Please do not do this in prod]
+]
+]
 
 ---
 class: inverse
 <div class="my-header"><h1>Context</h1></div>
-
+<br />
 ```yaml
 nodes:
 - router-id: 172.18.4.10
@@ -586,19 +659,6 @@ class: middle
 * Ask your vendor if this is something they can support
 * May require stronger security ([RFC 5925 TCP-AO](https://datatracker.ietf.org/doc/html/rfc5925))
 
----
-class: middle
-
-```yaml
-nodes:
-- router-id: 172.18.64.1
-- router-id: 172.18.64.2
-- router-id: 172.18.64.3
-- router-id: 172.18.128.4
-- router-id: 172.18.128.5
-- router-id: 172.18.192.6
-- router-id: 172.18.0.7
-```
 
 ---
 class:middle
@@ -635,11 +695,35 @@ router bgp 65000.16394
   !
 !
 ```
+---
+# Recap
+* Eliminated boilerplate
+ * templates
+ * anycast
+* Derived as much as possible from the router-id
+* Removed non-loopback addressing
+* BGP to everything
 
 ---
-# Time-constraint:  C-lab Demo?
-# Config review?
+class: middle, inverse
+<div class="my-header"><h1>Context</h1></div>
 
+```yaml
+nodes:
+- router-id: 172.18.8.0     # site1-spine
+- router-id: 172.18.8.1     # site1-spine
+- router-id: 172.18.4.2     # site1-leaf
+- router-id: 172.18.4.3     # site1-leaf
+- router-id: 172.18.4.4     # site1-leaf
+- router-id: 172.18.0.5     # site1-server
+- router-id: 172.18.0.6     # site1-server
+- router-id: 172.18.0.7     # site1-server
+- router-id: 172.18.0.8     # site1-server
+- router-id: 172.18.28.9    # site2-superspine
+- router-id: 172.18.24.10   # site2-spine
+- router-id: 172.18.20.11   # site2-leaf
+- router-id: 172.18.16.12   # site2-server
+```
 
 ---
-# TODO: Wrap
+# Possible live demo or show final rendered config

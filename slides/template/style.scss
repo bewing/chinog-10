@@ -362,3 +362,14 @@ div.my-header {
 	width: 100%;
 	text-align: left;
 }
+
+div.right-header {
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	height: 30px;
+	width: 90%;
+	text-align: right;
+  color: orange;
+
+}
