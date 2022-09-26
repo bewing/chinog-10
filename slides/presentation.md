@@ -198,13 +198,21 @@ tacacs-server 192.168.10.1
 ]
 ]
 ]
-* Anycast where possible
-* * Be careful about TACACS sessions and the like
+* Anycast when possible
+ * Make sure your application withdraws itself if not healthy
+ * Avoid ECMP through policy
 * Global services with fallbacks if not
-* * If RTT is important, dynamically order them
+ * If RTT is important, programatticaly order them
 
 ???
 You don't have to golf if you don't want to
+
+---
+class: middle
+<div class="my-header"><h1>Boilerplate</h1></div>
+
+.image-60[![anycast](assets/anycast.png)]
+
 
 
 ---
