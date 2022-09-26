@@ -46,49 +46,15 @@ TODO:  Better image
 
 ---
 class: middle
-<div class="my-header"><h1>Complexity</h1></div>
-.row.table.top[
-.col-3[
-### Simplicity
-]
-.col-5[
-.image-80[![one-dc](assets/one-dc.png)]
-]]
+<div class="my-header"><h1>Simplicity</h1></div>
+.image-40[![one-dc](assets/one-dc.png)]
 
 ???
 Simple, Spine/Leaf datacenter with service leaves
 
 ---
-<div class="my-header"><h1>Complexity</h1></div>
-<br />
-.image-60[![transformer-fire](assets/transformer-fire.png)]
-
-???
-May 2020 Transformer fire near Coresite datacenter
-
----
-class: middle
-
-<div class="my-header"><h1>Complexity</h1></div>
-.row.table.top[
-.col-3[
-### Redundancy
-]
-.col-5[
-.image-70[![one-dc](assets/redundancy.png)]
-]]
-
----
-class: inverse
-
-<div class="my-header"><h1>Complexity</h1></div>
-<br />
-<br />
-.image-60[![spreadsheet](assets/spreadsheet.jpeg)]
-
-???
-Management/spreadsheets don't do things twice
-They do them N-times
+class: full, middle, center
+background-image: url(assets/months_later.png)
 
 ---
 class: middle
