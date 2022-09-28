@@ -355,7 +355,20 @@ use the lower 16 bits to store role info<br />
 .center[.big[<16 bits>.**<16 bits>**]]
 
 ---
+class: middle
 <div class="right-header" text-align="right">This is the the 20% part</div>
+
+.col-6[
+.center.big[
+REGION 0 LEAF
+]
+]
+.col-6[
+.center.big[
+172.18.4.10
+]
+]
+
 .col-2[
 .orange[Region]
 ]
@@ -368,12 +381,6 @@ use the lower 16 bits to store role info<br />
 .col-2[&nbsp;]
 .col-4[
 .purple[ID]
-]
-
-.col-12[
-.center[
-172.18.4.10
-]
 ]
 
 .col-2[
@@ -398,10 +405,33 @@ use the lower 16 bits to store role info<br />
 **65500.1034**
 ]
 
-.col-12[
-.center[
+---
+class: middle
+<div class="right-header" text-align="right">This is the the 20% part</div>
+
+.col-6[
+.center.big[
+REGION 1 SPINE
+]
+]
+.col-6[
+.center.big[
 172.18.72.75
 ]
+]
+
+.col-2[
+.orange[Region]
+]
+.col-2[
+.green[Site]
+]
+.col-2[
+.red[Layer]
+]
+.col-2[&nbsp;]
+.col-4[
+.purple[ID]
 ]
 
 .col-2[
@@ -435,7 +465,7 @@ class: middle
 * Why 16 bits?
  * Have to title the talk somehow
  * IPv4 Reachability
- * BGP ASN space ~18 bits
+ * BGP 4-byte Private ASN space ~25 bits
 ]
 .col-6[
 .orange[Please do not do this in prod]
