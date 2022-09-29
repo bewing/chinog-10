@@ -767,7 +767,3 @@ nodes:
 
 ---
 <div id="demo"></div>
-<script>
-  AsciinemaPlayer.create('/demo.cast', document.getElementById("demo"));
-</script>
-# Possible live demo or show final rendered config
