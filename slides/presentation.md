@@ -351,8 +351,18 @@ use the lower 16 bits to store role info<br />
 <br />
 
 
-.center[.big[65000.XXXXX]]
-.center[.big[<16 bits>.**<16 bits>**]]
+.center[.big[
+65
+.orange[X]
+.green[X]
+.red[X]
+.
+.orange[X]
+.green[X]
+.red[X]
+.purple[XX]
+]]
+.center[.big[**<16 bits>.<16 bits>**]]
 
 ---
 class: middle
@@ -399,10 +409,10 @@ REGION 0 LEAF
 .purple[00001010]
 ]
 .col-6[
-65500.(4 * 256 + 10)
+65001.(4 * 256 + 10)
 ]
 .col-6[
-**65500.1034**
+**65001.1034**
 ]
 
 ---
@@ -411,7 +421,7 @@ class: middle
 
 .col-6[
 .center.big[
-REGION 1 SPINE
+REGION 3 SUPERSPINE
 ]
 ]
 .col-6[
@@ -435,13 +445,13 @@ REGION 1 SPINE
 ]
 
 .col-2[
-.orange[01]
+.orange[11]
 ]
 .col-2[
 .green[00]
 ]
 .col-2[
-.red[10]
+.red[11]
 ]
 .col-2[
 .purple[00]
@@ -450,10 +460,10 @@ REGION 1 SPINE
 .purple[01001011]
 ]
 .col-6[
-65500.(72 * 256 + 75)
+65303.(72 * 256 + 75)
 ]
 .col-6[
-**65500.18507**
+**65303.18507**
 ]
 
 ---
