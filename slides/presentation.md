@@ -15,8 +15,6 @@ CHI-NOG 10, Oct 2022<br />
 * complexity means more data collection and entry
 * more touches means more opportunity for error
 
-TODO:  Better image
-
 ---
 <div class="my-header"><h1>Talk Contents</h1></div>
 <br />
@@ -139,7 +137,7 @@ nodes:
         inbound-policy: LEAF-TO-SPINE
         neighbors:
         - address: 10.0.0.1
-          asn: TODO
+          asn: "65234"
   dns:
     search: warningg.com
     servers:
@@ -279,7 +277,7 @@ nodes:
         inbound-policy: LEAF-TO-SPINE
         neighbors:
         - address: 10.0.0.1
-          asn: TODO
+          asn: "65234"
 ```
 
 ---
@@ -375,9 +373,9 @@ use the lower 16 bits to store role info<br />
 ]
 ]
 
-
 ---
 <div class="right-header" text-align="right">This is the the 20% part</div>
+
 # Don't Repeat Yourself
 * Generate the IPv6 loopback
 * Encode information into bit fields
@@ -385,6 +383,20 @@ use the lower 16 bits to store role info<br />
 <br />
 <br />
 
+.row.table.middle[
+.col-2[
+.orange[Region]
+]
+.col-2[
+.green[Site]
+]
+.col-2[
+.red[Layer]
+]
+.col-3[
+.purple.center[Device]
+]
+]
 
 .center[.big[
 65
@@ -546,7 +558,7 @@ nodes:
         inbound-policy: LEAF-TO-SPINE
         neighbors:
         - address: 10.0.0.1
-          asn: TODO
+          asn: "65234"
 ```
 
 ---
@@ -743,14 +755,17 @@ class: middle
 <div class="my-header"><h1>BGP Peerings</h1></div>
 * Neighborships can specify AS ranges
 * Still have to statically map a policy to an interface
- * While we can predict this in our lab, production isn't as nice
 
---
+** DC1-SPINE1 **
+```terminal
+neighbor interface Ethernet1-48 peer-group LEAVES peer-filter LEAVES
+neighbor interface Ethernet49/1-52/1 peer-group SUPERSPINES peer-filter SUPERSPINES
+```
+* While we can predict this in our lab, production isn't as nice
 
-* What would be great is if remote AS determined policy
-* Ask your vendor if this is something they can support
-* May require stronger security ([RFC 5925 TCP-AO](https://datatracker.ietf.org/doc/html/rfc5925))
-
+```terminal
+neighbor interface Ethernet52/4 peer-group LEAVES peer-filter TEMP-LEAF
+```
 
 ---
 class:middle
@@ -762,14 +777,24 @@ class:middle
 * Advertise reachability via host-based BGP
  * GoBGP
  * FRR
-* IPv6 LL RA Supported!
+* IPv6 LL Autodetection Supported!
  
 ---
-class:middle
 <div class="my-header"><h1>Hosts</h1></div>
 
+.image-40[![one-dc](assets/hosts.png)]
+
+* Connect servers to one or more leaves
+* No more Layer 2 problems!
+ * LACP/MLAG
+ * Spanning Tree
+---
+
+<div class="my-header"><h1>Hosts</h1></div>
+<br />
+
 ```terminal
-router bgp 65000.16394
+router bgp 65001.1034
   neighbor SPINES peer-group
   neighbor SERVERS peer-group
   neighbor interface Ethernet1-48 peer-group SERVERS peer-filter SERVERS
@@ -787,6 +812,13 @@ router bgp 65000.16394
   !
 !
 ```
+
+--
+
+* What would be great is if remote AS determined policy
+* Ask your vendor if this is something they can support
+* May require stronger security ([RFC 5925 TCP-AO](https://datatracker.ietf.org/doc/html/rfc5925))
+
 ---
 # Recap
 * Eliminated boilerplate
