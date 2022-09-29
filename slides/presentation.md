@@ -112,7 +112,6 @@ class: inverse
 ```yaml
 nodes:
 - hostname: dc1-leaf1
-  router-id: 172.18.4.10
   region: dc1
   role: leaf
   aaa:
@@ -131,6 +130,7 @@ nodes:
       ipv6:
       - "2001:2b8:1::1/64"
   bgp:
+    router-id: 172.18.4.10
     asn: "65534"
     ipv4:
       peer-groups:
@@ -221,23 +221,21 @@ class: middle
 .row[
 .col-6[
 ```terminal
-<span style="color:red;">-ip nameserver 192.168.0.0</span>
-<span style="color:red;">-ip nameserver 192.168.100.100</span>
+ip nameserver 192.168.100.100
 !
-<span style="color:red;">-tacacs-server 192.168.3.2</span>
+tacacs-server 192.168.3.2
 tacacs-server 192.168.10.1
-<span style="color:red;">-tacacs-server 192.168.14.10</span>
+tacacs-server 192.168.14.10
 
 ```
 ]
 .col-6[
 ```terminal
-<span style="color:green;">+ip nameserver 10.240.0.0</span>
-<span style="color:green;">+ip nameserver 10.244.100.100</span>
+ip nameserver 192.168.100.100
 !
-<span style="color:green;">+tacacs-server 192.168.14.10</span>
+tacacs-server 192.168.3.2
 tacacs-server 192.168.10.1
-<span style="color:green;">+tacacs-server 192.168.3.2</span>
+tacacs-server 192.168.14.10
 ```
 ]
 ]
@@ -246,7 +244,7 @@ tacacs-server 192.168.10.1
  * Make sure your application withdraws itself if not healthy
  * Avoid ECMP through policy
 * Global services with fallbacks if not
- * If RTT is important, programatticaly order them
+ * If RTT is important, programatticaly order them with template logic
 
 ???
 You don't have to golf if you don't want to
@@ -258,7 +256,6 @@ class: inverse
 ```yaml
 nodes:
 - hostname: dc1-leaf1
-  router-id: 172.18.4.10
   region: dc1
   role: leaf
   addresses:
@@ -273,6 +270,7 @@ nodes:
       ipv6:
       - "2001:2b8:1::1/64"
   bgp:
+    router-id: 172.18.4.10
     asn: "65534"
     ipv4:
       peer-groups:
@@ -593,13 +591,13 @@ interface Ethernet 49/1
 .row.table.middle[
 .col-6[
 ```terminal
-router bgp 65000.TODO
+router bgp 65001.1034
   neighbor SPINES-v4 peer-group
   neighbor SPINES-v6 peer-group
 <span style="color:red;">-  neighbor 10.0.0.1 peer-group SPINES-v4</span>
-<span style="color:red;">-  neighbor 10.0.0.1 remote-as 65000.TODO</span>
+<span style="color:red;">-  neighbor 10.0.0.1 remote-as 65002.3080</span>
 <span style="color:red;">-  neighbor 2001:db8:ffff:0a00:1 peer-group SPINES-v6</span>
-<span style="color:red;">-  neighbor 2001:db8:ffff:0a00:1 remote-as 65000.TODO</span>
+<span style="color:red;">-  neighbor 2001:db8:ffff:0a00:1 remote-as 65002.3080</span>
   address-family ipv4 unicast
     peer-group SPINES-v4 activate
     no peer-group SPINES-v6 activate
@@ -613,13 +611,13 @@ router bgp 65000.TODO
 ]
 .col-6[
 ```terminal
-router bgp 65000.TODO
+router bgp 65031.1077
   neighbor SPINES-v4 peer-group
   neighbor SPINES-v6 peer-group
-<span style="color:green;">+  neighbor TODO peer-group SPINES-v4</span>
-<span style="color:green;">+  neighbor TODO remote-as TODO</span>
-<span style="color:green;">+  neighbor TODO peer-group SPINES-v6</span>
-<span style="color:green;">+  neighbor TODO remote-as TODO</span>
+<span style="color:green;">+  neighbor 10.5.49.23 peer-group SPINES-v4</span>
+<span style="color:green;">+  neighbor 10.5.49.23 remote-as 65032.3088</span>
+<span style="color:green;">+  neighbor 2001:db8::ffff:a05:3117 peer-group SPINES-v6</span>
+<span style="color:green;">+  neighbor 2001:db8::ffff:a05:3117 remote-as 65032.3088</span>
   address-family ipv4 unicast
     peer-group SPINES-v4 activate
     no peer-group SPINES-v6 activate
@@ -632,6 +630,9 @@ router bgp 65000.TODO
 ```
 ]
 ]
+
+???
+Descriptions:  operator-dependent.  Some people love them
 
 ---
 class: middle
@@ -648,10 +649,10 @@ interface Ethernet49/1
   pim ipv4 sparse-mode
   pim ipv6 sparse-mode
 !
-router bgp 6500.16394
+router bgp 65001.1034
   neighbor SPINES peer-group
   neighbor 2001:db8::ffff:0a00:1/127 peer-group SPINES
-  neighbor 2001:db8::ffff:0a00:1/127 remote-as TODO
+  neighbor 2001:db8::ffff:0a00:1/127 remote-as 65002.3080
   address-family ipv4 unicast
     bgp next-hop address-family ipv6
     neighbor SPINES activate
@@ -678,10 +679,10 @@ interface Ethernet49/1
   pim ipv4 sparse-mode
   pim ipv6 sparse-mode
 !
-router bgp 6500.16394
+router bgp 65001.1034
   neighbor SPINES peer-group
   neighbor fe80::1%Ethernet49/1 peer-group SPINES
-  neighbor fe80::1%Ethernet49/1 remote-as TODO
+  neighbor fe80::1%Ethernet49/1 remote-as 65002.3080
   address-family ipv4 unicast
     bgp next-hop address-family ipv6
     neighbor SPINES activate
@@ -720,7 +721,10 @@ interface Ethernet49/1
   pim ipv4 sparse-mode
   pim ipv6 sparse-mode
 !
-router bgp 65000.16394
+peer-filter SPINES
+ 10 match 4200000000-4294967294 result accept
+!
+router bgp 65001.1034
   neighbor SPINES peer-group
   neighbor interface Ethernet49/1 peer-group SPINES peer-filter SPINES
   address-family ipv4 unicast
@@ -740,6 +744,9 @@ class: middle
 * Neighborships can specify AS ranges
 * Still have to statically map a policy to an interface
  * While we can predict this in our lab, production isn't as nice
+
+--
+
 * What would be great is if remote AS determined policy
 * Ask your vendor if this is something they can support
 * May require stronger security ([RFC 5925 TCP-AO](https://datatracker.ietf.org/doc/html/rfc5925))
