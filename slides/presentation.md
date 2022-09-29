@@ -198,6 +198,50 @@ tacacs-server 192.168.10.1
 ]
 ]
 ]
+
+---
+class: middle
+<div class="my-header"><h1>Boilerplate</h1></div>
+
+.image-60[![anycast](assets/anycast.png)]
+
+---
+class: middle
+<div class="my-header"><h1>Boilerplate</h1></div>
+
+.table[
+.row[
+.col-6[
+.big[DC1-LEAF4]
+]
+.col-6[
+.big[DC4-LEAF9]
+]
+]
+.row[
+.col-6[
+```terminal
+<span style="color:red;">-ip nameserver 192.168.0.0</span>
+<span style="color:red;">-ip nameserver 192.168.100.100</span>
+!
+<span style="color:red;">-tacacs-server 192.168.3.2</span>
+tacacs-server 192.168.10.1
+<span style="color:red;">-tacacs-server 192.168.14.10</span>
+
+```
+]
+.col-6[
+```terminal
+<span style="color:green;">+ip nameserver 10.240.0.0</span>
+<span style="color:green;">+ip nameserver 10.244.100.100</span>
+!
+<span style="color:green;">+tacacs-server 192.168.14.10</span>
+tacacs-server 192.168.10.1
+<span style="color:green;">+tacacs-server 192.168.3.2</span>
+```
+]
+]
+]
 * Anycast when possible
  * Make sure your application withdraws itself if not healthy
  * Avoid ECMP through policy
@@ -206,14 +250,6 @@ tacacs-server 192.168.10.1
 
 ???
 You don't have to golf if you don't want to
-
----
-class: middle
-<div class="my-header"><h1>Boilerplate</h1></div>
-
-.image-60[![anycast](assets/anycast.png)]
-
-
 
 ---
 class: inverse
@@ -294,6 +330,11 @@ nodes:
 .center[00001010]
 ]]
 
+???
+What is a router-id?   32 bits<br />
+Much like BGP informational communities<br />
+use the lower 16 bits to store role info<br />
+
 --
 
 .row.table.middle[
@@ -336,10 +377,6 @@ nodes:
 ]
 ]
 
-???
-What is a router-id?   32 bits<br />
-Much like BGP informational communities<br />
-use the lower 16 bits to store role info<br />
 
 ---
 <div class="right-header" text-align="right">This is the the 20% part</div>
@@ -409,7 +446,11 @@ REGION 0 LEAF
 .purple[00001010]
 ]
 .col-6[
-65001.(4 * 256 + 10)
+.black[65]
+.orange[0]
+.green[0]
+.red[1] .
+.black[(4 * 256 + 10)]
 ]
 .col-6[
 **65001.1034**
@@ -460,7 +501,11 @@ REGION 3 SUPERSPINE
 .purple[01001011]
 ]
 .col-6[
-65303.(72 * 256 + 75)
+.black[65]
+.orange[3]
+.green[0]
+.red[3]
+.black[.(72 * 256 + 75)]
 ]
 .col-6[
 **65303.18507**
