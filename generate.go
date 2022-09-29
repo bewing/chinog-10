@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/binary"
 	"flag"
 	"fmt"
 	"net/netip"
@@ -54,10 +55,19 @@ func loadNodeData(routerId string) (NodeData, error) {
 	return nd, nil
 }
 
+func IPv4ToInt(routerId string) (uint32, error) {
+	ip, err := netip.ParseAddr(routerId)
+	if err != nil {
+		return 0, err
+	}
+	return binary.BigEndian.Uint32(ip.AsSlice()), nil
+}
+
 func init() {
 	gfuncs := gomplate.CreateFuncs(context.Background(), new(data.Data))
 	myFuncs := template.FuncMap{}
 	myFuncs["loadNodeData"] = loadNodeData
+	myFuncs["IPv4ToInt"] = IPv4ToInt
 	delete(gfuncs, "slice")
 	tmpl = template.Must(template.New("").Funcs(gfuncs).Funcs(myFuncs).ParseGlob("templates/*.tpl"))
 }

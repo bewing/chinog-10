@@ -79,5 +79,19 @@ router bgp {{ $nodeData.ASN }}
       neighbor LEAVES activate
       neighbor SERVERS activate
       redistribute connected
-   !
+!
+router multicast
+   ipv4
+      routing
+      multipath deterministic color {{ IPv4ToInt .RouterId }}
+   ipv6
+      routing
+      multipath deterministic color {{ IPv4ToInt .RouterId }}
+!
+router pim sparse-mode
+   ipv4
+      rp address 192.0.2.1
+   ipv6
+      rp address 2001:fb8:ffff::1
+!
 end
