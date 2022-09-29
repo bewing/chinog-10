@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"net/netip"
 	"os"
 	"text/template"
@@ -15,41 +16,48 @@ type Node struct {
 	RouterId string
 }
 
-var tmpl *template.Template
-
-func nodeType(routerId string) (string, error) {
-	ip, err := netip.ParseAddr(routerId)
-	if err != nil {
-		return "", err
-	}
-	typeByte := ip.AsSlice()[2]
-	typeByte = typeByte >> 2
-	typeByte = typeByte & 3
-	if typeByte^1 == 0 {
-		return "leaf", nil
-	} else if typeByte^2 == 0 {
-		return "spine", nil
-	} else if typeByte^3 == 0 {
-		return "superspine", nil
-	}
-	return "server", nil
+type NodeData struct {
+	Region int
+	Site   int
+	Layer  int
+	Type   string
+	ASN    string
 }
 
-func asnFromRouterId(routerId string) (int, error) {
+var tmpl *template.Template
+
+func loadNodeData(routerId string) (NodeData, error) {
+	nd := NodeData{}
 	ip, err := netip.ParseAddr(routerId)
 	if err != nil {
-		return -1, err
+		return nd, err
 	}
-	asnBytes := ip.AsSlice()[2:]
-	asn := int(asnBytes[0])*256 + int(asnBytes[1])
-	return asn, nil
+	data := ip.AsSlice()[2]
+	typeByte := data & 12 >> 2
+	if typeByte^1 == 0 {
+		nd.Type = "leaf"
+		nd.Layer = 1
+	} else if typeByte^2 == 0 {
+		nd.Type = "spine"
+		nd.Layer = 2
+	} else if typeByte^3 == 0 {
+		nd.Type = "superspine"
+		nd.Layer = 3
+	} else {
+		nd.Type = "server"
+		nd.Layer = 0
+	}
+	nd.Region = int(data & 192 >> 6)
+	nd.Site = int(data & 48 >> 4)
+
+	nd.ASN = fmt.Sprintf("65%d%d%d.%d", nd.Region, nd.Site, nd.Layer, int(ip.AsSlice()[2])*256+int(ip.AsSlice()[3]))
+	return nd, nil
 }
 
 func init() {
 	gfuncs := gomplate.CreateFuncs(context.Background(), new(data.Data))
 	myFuncs := template.FuncMap{}
-	myFuncs["nodeType"] = nodeType
-	myFuncs["asnFromRouterId"] = asnFromRouterId
+	myFuncs["loadNodeData"] = loadNodeData
 	delete(gfuncs, "slice")
 	tmpl = template.Must(template.New("").Funcs(gfuncs).Funcs(myFuncs).ParseGlob("templates/*.tpl"))
 }

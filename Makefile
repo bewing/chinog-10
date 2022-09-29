@@ -14,3 +14,9 @@ slides: slides/dist/presentation.html
 
 .PHONY: pdf
 pdf: slides/pdf/presentation.pdf
+
+bin/generate: generate.go
+	go build -o bin/ generate.go
+
+.PHONY: generate
+generate: bin/generate
