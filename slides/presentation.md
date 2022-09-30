@@ -437,7 +437,7 @@ REGION 0 LEAF
 ]
 .col-2[&nbsp;]
 .col-4[
-.purple[ID]
+.purple[Device]
 ]
 
 .col-2[
@@ -492,7 +492,7 @@ REGION 3 SUPERSPINE
 ]
 .col-2[&nbsp;]
 .col-4[
-.purple[ID]
+.purple[Device]
 ]
 
 .col-2[
