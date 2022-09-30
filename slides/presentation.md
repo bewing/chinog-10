@@ -282,6 +282,7 @@ nodes:
 
 ---
 # Don't Repeat Yourself
+* Don't have the same info twice (IPv4 Lo0, router-id)
 * Generate the IPv6 loopback
 
 <br />
@@ -296,8 +297,8 @@ nodes:
 <div class="right-header" text-align="right">This is the the 20% part</div>
 
 # Don't Repeat Yourself
+* Don't have the same info twice (IPv4 Lo0, router-id)
 * Generate the IPv6 loopback
-* Encode information into bit fields
 
 .row.table[
 .col-3[
@@ -377,6 +378,7 @@ use the lower 16 bits to store role info<br />
 <div class="right-header" text-align="right">This is the the 20% part</div>
 
 # Don't Repeat Yourself
+* Don't have the same info twice (IPv4 Lo0, router-id)
 * Generate the IPv6 loopback
 * Encode information into bit fields
 * BGP ASN?  Sure!
