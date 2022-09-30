@@ -294,6 +294,39 @@ nodes:
 ]
 
 ---
+class: inverse
+<div class="my-header"><h1>Context</h1></div>
+<br />
+```yaml
+nodes:
+- hostname: dc1-leaf1
+  region: dc1
+  role: leaf
+  router-id: 172.18.4.10
+  addresses:
+    Ethernet1/1:
+      ipv4:
+      - 10.0.0.0/31
+      ipv6:
+      - "2001:2b8:1::1/64"
+  bgp:
+    asn: "65534"
+    ipv4:
+      peer-groups:
+      - name: SPINE-LEAF
+        outbound-policy: SPINE-TO-LEAF
+        inbound-policy: LEAF-TO-SPINE
+        neighbors:
+        - address: 10.0.0.1
+          asn: "65234"
+```
+
+???
+Focus on region / role / routerid <br />
+Ask who's used BGP info communities before
+What is a router-id?   32 bits<br />
+
+---
 <div class="right-header" text-align="right">This is the the 20% part</div>
 
 # Don't Repeat Yourself
@@ -328,8 +361,6 @@ nodes:
 ]]
 
 ???
-What is a router-id?   32 bits<br />
-Much like BGP informational communities<br />
 use the lower 16 bits to store role info<br />
 
 --
