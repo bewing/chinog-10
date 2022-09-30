@@ -51,6 +51,28 @@
   font-style: italic;
 }
 
+@font-face {
+  font-family: 'Cascadia Code Mono';
+  src: url('Cascadia_Code/CascadiaCodeMono-Regular.otf') format("opentype");
+
+}
+@font-face {
+  font-family: 'Cascadia Code Mono';
+  src: url('Cascadia_Code/CascadiaCodeMono-Bold.otf') format("opentype");
+  font-weight: bold;
+}
+@font-face {
+  font-family: 'Cascadia Code Mono';
+  src: url('Cascadia_Code/CascadiaCodeMono-Italic.otf') format("opentype");
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Cascadia Code Mono';
+  src: url('Cascadia_Code/CascadiaCodeMono-BoldItalic.otf') format("opentype");
+  font-weight: bold;
+  font-style: italic;
+}
+
 // Theme
 // ---------------------------------------------------------------------------
 
