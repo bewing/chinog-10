@@ -1,0 +1,36 @@
+frr defaults datacenter
+hostname 172.18.0.7
+no ipv6 forwarding
+log file /tmp/frr.log
+debug igmp events
+debug igmp packets
+debug igmp trace
+debug pim events
+debug pim packets
+debug pim trace
+debug pim bsm
+debug pim vxlan
+!
+ip pim rp 192.0.2.1
+!
+!
+interface lo
+ ip address 172.18.0.7/32
+ ipv6 address 2001:db8::172:18:0:7/128
+ ip pim
+ ip pim use-source 172.18.0.7
+!
+!
+router bgp 4259840007
+ bgp router-id 172.18.0.7
+ neighbor eth1 interface remote-as external
+ !
+ address-family ipv4 unicast
+  redistribute connected
+ exit-address-family
+ address-family ipv6 unicast
+  neighbor eth1 activate
+  redistribute connected
+ exit-address-family
+exit
+!
