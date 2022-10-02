@@ -1,0 +1,55 @@
+name: bitwise
+topology:
+  kinds:
+    ceos:
+      image: ceos:4.28.1F
+      env:
+        INTFTYPE: et
+    linux:
+      image: frrouting/frr:v8.3.1
+      binds:
+        - configs/daemons:/etc/frr/daemons
+  nodes:
+    172.18.8.0:
+      kind: ceos
+      startup-config: configs/172.18.8.0
+    172.18.8.1:
+      kind: ceos
+      startup-config: configs/172.18.8.1
+    172.18.4.2:
+      kind: ceos
+      startup-config: configs/172.18.4.2
+    172.18.4.3:
+      kind: ceos
+      startup-config: configs/172.18.4.3
+    172.18.4.4:
+      kind: ceos
+      startup-config: configs/172.18.4.4
+    172.18.0.5:
+      kind: linux
+      binds:
+        - configs/172.18.0.5:/etc/frr/frr.conf
+    172.18.0.6:
+      kind: linux
+      binds:
+        - configs/172.18.0.6:/etc/frr/frr.conf
+    172.18.0.7:
+      kind: linux
+      binds:
+        - configs/172.18.0.7:/etc/frr/frr.conf
+    172.18.0.8:
+      kind: linux
+      binds:
+        - configs/172.18.0.8:/etc/frr/frr.conf
+  links:
+  - endpoints: ["172.18.8.0:et1", "172.18.4.2:et1"]
+  - endpoints: ["172.18.8.0:et2", "172.18.4.3:et1"]
+  - endpoints: ["172.18.8.0:et3", "172.18.4.4:et1"]
+  - endpoints: ["172.18.8.1:et1", "172.18.4.2:et2"]
+  - endpoints: ["172.18.8.1:et2", "172.18.4.3:et2"]
+  - endpoints: ["172.18.8.1:et3", "172.18.4.4:et2"]
+  - endpoints: ["172.18.4.2:et3", "172.18.0.5:eth1"]
+  - endpoints: ["172.18.4.3:et3", "172.18.0.6:eth1"]
+  - endpoints: ["172.18.4.2:et4", "172.18.0.7:eth1"]
+  - endpoints: ["172.18.4.3:et4", "172.18.0.8:eth1"]
+  - endpoints: ["172.18.4.2:et5", "172.18.0.8:eth2"]

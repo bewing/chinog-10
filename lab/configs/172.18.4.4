@@ -1,0 +1,108 @@
+
+hostname node-65001.1028
+username admin privilege 15 secret admin
+!
+service routing protocols model multi-agent
+platform tfa personality arfa
+!
+vrf MGMT
+!
+interface Management1
+   vrf MGMT
+   ip address 192.0.2.0/24
+   ipv4 address 2001:fb8:100::10/64
+!
+interface Loopback0
+   ip address 172.18.4.4/32
+   ipv6 address 2001:fb8::172:18:4:4/128
+!
+interface Ethernet1
+   no switchport
+   ipv6 enable
+   pim ipv4 sparse-mode
+   pim ipv6 sparse-mode
+!
+interface Ethernet2
+   no switchport
+   ipv6 enable
+   pim ipv4 sparse-mode
+   pim ipv6 sparse-mode
+!
+interface Ethernet3
+   no switchport
+   ipv6 enable
+   pim ipv4 sparse-mode
+   pim ipv6 sparse-mode
+!
+interface Ethernet4
+   no switchport
+   ipv6 enable
+   pim ipv4 sparse-mode
+   pim ipv6 sparse-mode
+!
+management api gnmi
+   transport grpc default
+   vrf MGMT
+!
+management api netconf
+   transport ssh default
+   vrf MGMT
+!
+management api http-commands
+   no shutdown
+   vrf MGMT
+     no shutdown
+   !
+!
+ip routing ipv6 interfaces
+ip icmp source-interface Loopback0
+ipv6 unicast-routing
+ip route vrf MGMT 0.0.0.0/0 192.0.2.254
+ipv6 route vrf MGMT ::/0 2001:fb8:100::1
+!
+peer-filter ASN4-PRIVATE
+   10 match 4200000000-4294967294 result accept
+!
+router bgp 65001.1028
+   bgp asn notation asdot
+   router-id 172.18.4.4
+   neighbor SPINES peer-group
+   neighbor LEAVES peer-group
+   neighbor SERVERS peer-group
+   neighbor interface Ethernet3-4 peer-group SERVERS peer-filter ASN4-PRIVATE
+   neighbor interface Ethernet1-2 peer-group SPINES peer-filter ASN4-PRIVATE
+   !
+   address-family ipv4
+      bgp next-hop address-family ipv6
+      neighbor SPINES activate
+      neighbor SPINES next-hop address-family ipv6 originate
+      neighbor SUPERSPINES activate
+      neighbor SUPERSPINES next-hop address-family ipv6 originate
+      neighbor LEAVES activate
+      neighbor LEAVES next-hop address-family ipv6 originate
+      neighbor SERVERS activate
+      neighbor SERVERS next-hop address-family ipv6 originate
+      redistribute connected
+   !
+   address-family ipv6
+      neighbor SPINES activate
+      neighbor SUPERSPINES activate
+      neighbor LEAVES activate
+      neighbor SERVERS activate
+      redistribute connected
+!
+router multicast
+   ipv4
+      routing
+      multipath deterministic color 2886861828
+   ipv6
+      routing
+      multipath deterministic color 2886861828
+!
+router pim sparse-mode
+   ipv4
+      rp address 192.0.2.1
+   ipv6
+      rp address 2001:fb8:ffff::1
+!
+end

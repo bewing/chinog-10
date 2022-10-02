@@ -2,3 +2,5 @@
 slides/dist
 slides/pdf
 bin/
+lab/clab*/
+lab/.*.bak
