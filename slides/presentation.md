@@ -14,6 +14,7 @@ CHI-NOG 10, Oct 2022<br />
 * reducing complexitiy in datacenter configuration
 * complexity means more data collection and entry
 * more touches means more opportunity for error
+* Examples today in Aristese due to my familiarity
 
 ---
 <div class="my-header"><h1>Talk Contents</h1></div>
@@ -58,7 +59,7 @@ background-image: url(assets/months_later.png)
 class: middle
 
 <div class="my-header"><h1>Complexity</h1></div>
-.image-60[![horizontal](assets/horizontal.png)]
+.image-60[![horizontal](assets/complex.png)]
 
 ???
 Datacenters spread across regions
@@ -242,7 +243,7 @@ tacacs-server 192.168.14.10
  * Make sure your application withdraws itself if not healthy
  * Avoid ECMP through policy
 * Global services with fallbacks if not
- * If RTT is important, programatticaly order them with template logic
+ * If RTT is important, programmatically order them with template logic
 
 ???
 You don't have to golf if you don't want to
@@ -865,6 +866,46 @@ router bgp 65001.1034
 class: middle, inverse
 <div class="my-header"><h1>Context</h1></div>
 
+.row.table.middle[
+.col-6[
+```yaml
+nodes:
+- hostname: dc1-leaf1
+  region: dc1
+  role: leaf
+  aaa:
+  - 192.168.3.2
+  - 192.168.10.1
+  - 192.168.14.10
+  addresses:
+    Loopback0:
+      ipv4:
+      - 172.18.4.10/32
+      ipv6:
+      - "2001:db8::1/128"
+    Ethernet1/1:
+      ipv4:
+      - 10.0.0.0/31
+      ipv6:
+      - "2001:2b8:1::1/64"
+  bgp:
+    router-id: 172.18.4.10
+    asn: "65534"
+    ipv4:
+      peer-groups:
+      - name: SPINE-LEAF
+        outbound-policy: SPINE-TO-LEAF
+        inbound-policy: LEAF-TO-SPINE
+        neighbors:
+        - address: 10.0.0.1
+          asn: "65234"
+  dns:
+    search: warningg.com
+    servers:
+    - 8.8.8.8
+```
+]
+.col-6[
 ```yaml
 nodes:
 - router-id: 172.18.8.0     # site1-spine
@@ -882,8 +923,51 @@ nodes:
 - router-id: 172.18.16.12   # site2-server
 ```
 
+]]
+
 ---
 <div id="generateDemo"></div>
 
 ---
 <div id="containerlabDemo"></div>
+
+
+---
+class: inverse, center, middle
+
+# Thank you <br />
+## Questions ? <br /><br />
+[www.github.com/bewing/chinog-10](https://www.github.com/bewing/chinog-10/)
+
+---
+
+# Bitshifting
+```golang
+func loadNodeData(routerId string) (NodeData, error) {
+	nd := NodeData{}
+	ip, err := netip.ParseAddr(routerId)
+	if err != nil {
+		return nd, err
+	}
+	data := ip.AsSlice()[2]
+	typeByte := data & 12 >> 2
+	if typeByte^1 == 0 {
+		nd.Type = "leaf"
+		nd.Layer = 1
+	} else if typeByte^2 == 0 {
+		nd.Type = "spine"
+		nd.Layer = 2
+	} else if typeByte^3 == 0 {
+		nd.Type = "superspine"
+		nd.Layer = 3
+	} else {
+		nd.Type = "server"
+		nd.Layer = 0
+	}
+	nd.Region = int(data & 192 >> 6)
+	nd.Site = int(data & 48 >> 4)
+
+	nd.ASN = fmt.Sprintf("65%d%d%d.%d", nd.Region, nd.Site, nd.Layer, int(ip.AsSlice()[2])*256+int(ip.AsSlice()[3]))
+	return nd, nil
+}
+```
