@@ -328,7 +328,7 @@ Ask who's used BGP info communities before
 What is a router-id?   32 bits<br />
 
 ---
-<div class="right-header" text-align="right">This is the the 20% part</div>
+<div class="right-header" text-align="right">This is the 20% part</div>
 
 # Don't Repeat Yourself
 * Don't have the same info twice (IPv4 Lo0, router-id)
@@ -407,7 +407,7 @@ use the lower 16 bits to store role info<br />
 ]
 
 ---
-<div class="right-header" text-align="right">This is the the 20% part</div>
+<div class="right-header" text-align="right">This is the 20% part</div>
 
 # Don't Repeat Yourself
 * Don't have the same info twice (IPv4 Lo0, router-id)
@@ -447,7 +447,7 @@ use the lower 16 bits to store role info<br />
 
 ---
 class: middle
-<div class="right-header" text-align="right">This is the the 20% part</div>
+<div class="right-header" text-align="right">This is the 20% part</div>
 
 .col-6[
 .center.big[
@@ -502,7 +502,7 @@ REGION 0 LEAF
 
 ---
 class: middle
-<div class="right-header" text-align="right">This is the the 20% part</div>
+<div class="right-header" text-align="right">This is the 20% part</div>
 
 .col-6[
 .center.big[
@@ -557,7 +557,7 @@ REGION 3 SUPERSPINE
 
 ---
 class: middle
-<div class="right-header" text-align="right">This is the the 20% part</div>
+<div class="right-header" text-align="right">This is the 20% part</div>
 
 .row.table.middle[
 .col-6[
@@ -685,9 +685,9 @@ class: middle
 <div class="my-header"><h1>Interfaces</h1></div>
 
 * [RFC5549](https://datatracker.ietf.org/doc/html/rfc5549) - IPv4 NLRI in IPv6 Peering
-* * Allows IPv4 reachability over just IPv6 peerings
-* * No longer need IPv4 BGP peerings
-* * No longer need IPv4 point to point interfaces!
+* Allows IPv4 reachability over just IPv6 peerings
+* No longer need IPv4 BGP peerings
+* No longer need IPv4 point to point interfaces!
 
 ```terminal
 interface Ethernet49/1
@@ -933,7 +933,8 @@ nodes:
 
 
 ---
-class: inverse, center, middle
+class: center, middle
+<div class="my-header"><img src="assets/imc-logo.png" style="float: left; width:250px"></div>
 
 # Thank you <br />
 ## Questions ? <br /><br />
